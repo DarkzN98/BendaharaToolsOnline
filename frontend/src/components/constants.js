@@ -1,3 +1,3 @@
 module.exports = {
-    backend_url: "http://localhost:8000"
+    backend_url: false ? "http://localhost:8000" : "https://backend.doelgaming.xyz"
 }

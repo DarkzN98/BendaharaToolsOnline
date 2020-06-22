@@ -32,7 +32,5 @@ router.register(r'notas', views.NotaViewSet)
 urlpatterns = [
     path('api/', include(router.urls)),
     path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('api/auth/login', LoginAPI.as_view()),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
 ]
