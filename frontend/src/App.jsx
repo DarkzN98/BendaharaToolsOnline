@@ -7,6 +7,7 @@ import Blank from "./components/Blank/Blank";
 import LoginPage from "./components/LoginPage";
 import Logout from "./components/Logout";
 import KasBulanan from './components/KasBulanan';
+import MasterBuku from './components/MasterBuku';
 
 //TODO Web Template Studio: Add routes for your new pages here.
 const App = () => {
@@ -17,6 +18,7 @@ const App = () => {
           <Route exact path = "/login" component = { LoginPage } />
           <Route exact path = "/logout" component = { Logout } />
           <Route exact path = "/kasbulanan" component = { KasBulanan } />
+          <Route exact path = "/masterbuku" component = { MasterBuku } />
         </Switch>
         <Footer />
       </React.Fragment>

@@ -26,9 +26,15 @@ const NavBar = () => {
             ""
             :
             <NavDropdown title={`Tools`}>
-              <NavDropdown.Item href="/kasbulanan">Kas Bulanan</NavDropdown.Item>
-              <NavDropdown.Item href="/kaslab">Kas Lab</NavDropdown.Item>
-              <NavDropdown.Item href="/penjualanbuku">Penjualan Buku</NavDropdown.Item>
+              <NavDropdown.Header>Kas Bulanan</NavDropdown.Header>
+              <NavDropdown.Item href="/kasbulanan">Master Kas Bulanan</NavDropdown.Item>
+              <NavDropdown.Divider></NavDropdown.Divider>
+              <NavDropdown.Header>Kas Lab</NavDropdown.Header>
+              <NavDropdown.Item href="/kaslab">Master Kas Lab</NavDropdown.Item>
+              <NavDropdown.Divider></NavDropdown.Divider>
+              <NavDropdown.Header>Penjualan Buku</NavDropdown.Header>
+              <NavDropdown.Item href="/masterbuku">Master Buku</NavDropdown.Item>
+              <NavDropdown.Item href="/masterpenjualanbuku">Master Penjualan</NavDropdown.Item>
             </NavDropdown>
           }
           {

@@ -28,9 +28,12 @@ from bendahara.api import LoginAPI
 router = routers.DefaultRouter()
 router.register(r'tokos', views.TokoViewSet)
 router.register(r'notas', views.NotaViewSet)
+router.register(r'bukus', views.BukuPraktikumViewSet)
+router.register(r'penjualans', views.PenjualanBukuViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),
     path('admin/', admin.site.urls),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
 ]

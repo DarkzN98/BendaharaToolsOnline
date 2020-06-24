@@ -29,3 +29,22 @@ class NotaItem(models.Model):
 class Barang(models.Model):
     nama_barang = models.CharField(max_length=50)
     id_stiker = models.CharField(max_length=4)
+
+class BukuPraktikum(models.Model):
+    nama_buku = models.CharField(max_length=50)
+    jurusan_buku = models.CharField(max_length=3)
+    tanggal_cetak_buku = models.DateField()
+    harga_beli_buku = models.IntegerField()
+    harga_jual_buku = models.IntegerField()
+    stok_buku = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return f'{self.nama_buku} [{self.jurusan_buku} {self.tanggal_cetak_buku.year}]'
+
+class PenjualanBuku(models.Model):
+    buku = models.ForeignKey(BukuPraktikum, on_delete=models.CASCADE, to_field='id')
+    tanggal_penjualan_buku = models.DateField()
+    lab_penjualan_buku = models.CharField(max_length=5)
+    jumlah_penjualan_buku = models.PositiveSmallIntegerField()
+    terima_uang_penjualan_buku = models.IntegerField()
+    confirmed_uang_penjualan_buku = models.BooleanField(default=False)

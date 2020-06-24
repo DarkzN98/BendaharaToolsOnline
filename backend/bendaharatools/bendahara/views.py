@@ -4,8 +4,8 @@ from django.db.models import Q
 
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
-from bendahara.serializers import TokoSerializer, NotaSerializer, LoginSerializer
-from bendahara.models import Toko, Nota, NotaItem
+from bendahara.serializers import TokoSerializer, NotaSerializer, LoginSerializer, BukuPraktikumSerializer, PenjualanBukuSerializer
+from bendahara.models import Toko, Nota, NotaItem, BukuPraktikum, PenjualanBuku
 
 import datetime
 
@@ -53,3 +53,29 @@ class NotaViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(tanggal_beli__year=datetime.datetime.now().year)
             queryset = queryset.filter(tanggal_beli__month=datetime.datetime.now().month)
         return queryset
+
+class BukuPraktikumViewSet(viewsets.ModelViewSet):
+    queryset = BukuPraktikum.objects.all()
+    serializer_class = BukuPraktikumSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    # Filtering
+    def get_queryset(self):
+        queryset = BukuPraktikum.objects.all()
+        filter_this_semester = self.request.query_params.get('this_semester', False)
+        if(filter_this_semester):
+            # check tanggal sekarang ada di semester bberapa
+            if(datetime.datetime.now().month <= 6):
+                # SMT Genap ?
+                queryset = queryset.filter(tanggal_cetak_buku__range=(datetime.datetime.strptime(f'{datetime.datetime.now().year}-01-01', '%Y-%m-%d'), datetime.datetime.strptime(f'{datetime.datetime.now().year}-06-30', '%Y-%m-%d')))
+            else:
+                queryset = queryset.filter(tanggal_cetak_buku__range=(datetime.datetime.strptime(f'{datetime.datetime.now().year}-07-01', '%Y-%m-%d'), datetime.datetime.strptime(f'{datetime.datetime.now().year}-12-31', '%Y-%m-%d')))
+        return queryset
+
+class PenjualanBukuViewSet(viewsets.ModelViewSet):
+    queryset = PenjualanBuku.objects.all()
+    serializer_class = PenjualanBukuSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = PenjualanBuku.objects.all()
