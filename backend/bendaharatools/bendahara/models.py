@@ -48,3 +48,6 @@ class PenjualanBuku(models.Model):
     jumlah_penjualan_buku = models.PositiveSmallIntegerField()
     terima_uang_penjualan_buku = models.IntegerField()
     confirmed_uang_penjualan_buku = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'Penjualan Buku {self.buku.nama_buku} - {self.lab_penjualan_buku} [{self.tanggal_penjualan_buku.year}] { "OK" if self.confirmed_uang_penjualan_buku else ""}'

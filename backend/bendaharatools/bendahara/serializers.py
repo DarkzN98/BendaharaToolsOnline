@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from bendahara.models import Toko, Nota, NotaItem, BukuPraktikum, PenjualanBuku
+from django.db.models import Sum
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,9 +30,14 @@ class NotaSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'id', 'toko', 'tanggal_beli', 'pembeli', 'items']
 
 class BukuPraktikumSerializer(serializers.ModelSerializer):
+    terjual = serializers.SerializerMethodField('get_terjual')
+
+    def get_terjual(self, obj):
+        return PenjualanBuku.objects.filter(buku=obj).aggregate(Sum('jumlah_penjualan_buku'))
+
     class Meta:
         model = BukuPraktikum
-        fields = ['id', 'nama_buku', 'jurusan_buku','tanggal_cetak_buku', 'harga_beli_buku', 'harga_jual_buku', 'stok_buku']
+        fields = ['id', 'nama_buku', 'jurusan_buku','tanggal_cetak_buku', 'harga_beli_buku', 'harga_jual_buku', 'stok_buku', 'terjual']
 
 class PenjualanBukuSerializer(serializers.ModelSerializer):
     buku = BukuPraktikumSerializer()

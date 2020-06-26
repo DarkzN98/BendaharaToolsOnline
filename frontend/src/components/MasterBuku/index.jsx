@@ -12,6 +12,7 @@ const axios = require('axios');
 const MasterBuku = () => {
 
     const [listBukus, setListBukus] = useState([]);
+    const history = useHistory();
     const refreshListBuku = async () =>{
         axios.get(`${constants.backend_url}/api/bukus/?this_semester=true`,{
             headers: {
@@ -22,7 +23,19 @@ const MasterBuku = () => {
             setListBukus(response.data)
         })
         .catch((error) =>{
-
+            if(!error.response)
+            {
+                window.localStorage.removeItem('bendaharausertoken');
+                window.localStorage.removeItem('bendaharausername');
+                history.push("/");
+                return
+            }
+            if (error.response.status == 401)
+            {
+                window.localStorage.removeItem('bendaharausertoken');
+                window.localStorage.removeItem('bendaharausername');
+                history.push("/");
+            }
         });
     }
 
@@ -60,8 +73,8 @@ const MasterBuku = () => {
                                     <td>{lb.harga_beli_buku}</td>
                                     <td>{lb.harga_jual_buku}</td>
                                     <td>{lb.stok_buku}</td>
-                                    <td>0</td>
-                                    <td>0</td>
+                                    <td>{lb.terjual.jumlah_penjualan_buku__sum * 1}</td>
+                                    <td>{lb.stok_buku - lb.terjual.jumlah_penjualan_buku__sum}</td>
                                 </tr>
                             );
                         })
