@@ -11,6 +11,61 @@ const MasterPenjualanBuku = () => {
     
     const [listPenjualans, setListPenjualans] = useState([]);
     const history = useHistory();
+
+    const handleDeleteBuku = async (id_buku) =>{
+        axios.delete(`${constants.backend_url}/api/penjualans/${id_buku}/`, {
+            headers: {
+                'Authorization': `Token ${window.localStorage.getItem('bendaharausertoken')}`
+            }
+        })
+        .then((response) =>{
+            loadPenjualanThisSemester();
+        })
+        .catch((error) =>{
+            if(!error.response)
+            {
+                window.localStorage.removeItem('bendaharausertoken');
+                window.localStorage.removeItem('bendaharausername');
+                history.push("/");
+                return
+            }
+            if (error.response.status == 401)
+            {
+                window.localStorage.removeItem('bendaharausertoken');
+                window.localStorage.removeItem('bendaharausername');
+                history.push("/");
+            }
+        });
+    }
+
+    const handleConfirmBuku = async (id_buku) =>{
+        axios.patch(`${constants.backend_url}/api/penjualans/${id_buku}/`, {
+            "confirmed_uang_penjualan_buku": true
+        },{
+            headers: {
+                'Authorization': `Token ${window.localStorage.getItem('bendaharausertoken')}`
+            }
+        })
+        .then((response) =>{
+            loadPenjualanThisSemester();
+        })
+        .catch((error) =>{
+            if(!error.response)
+            {
+                window.localStorage.removeItem('bendaharausertoken');
+                window.localStorage.removeItem('bendaharausername');
+                history.push("/");
+                return
+            }
+            if (error.response.status == 401)
+            {
+                window.localStorage.removeItem('bendaharausertoken');
+                window.localStorage.removeItem('bendaharausername');
+                history.push("/");
+            }
+        });
+    }
+
     const numberWithCommas = (x) => {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
@@ -78,8 +133,8 @@ const MasterPenjualanBuku = () => {
                                         <td>{lp.lab_penjualan_buku}</td>
                                         <td>{`Rp. ${numberWithCommas(lp.terima_uang_penjualan_buku)}`}</td>
                                         <td>{`Rp. ${numberWithCommas(lp.buku.harga_jual_buku * lp.jumlah_penjualan_buku)}`}</td>
-                                        <td>{lp.confirmed_uang_penjualan_buku ? "OK" : <Button variant="primary">Confirm</Button>}</td>
-                                        <td><Button variant="outline-danger">Delete</Button></td>
+                                        <td>{lp.confirmed_uang_penjualan_buku ? <strong>OK</strong> : <Button variant="primary" onClick={()=>handleConfirmBuku(lp.id)}>Confirm</Button>}</td>
+                                        <td><Button variant="outline-danger" onClick={()=>{handleDeleteBuku(lp.id)}}>Delete</Button></td>
                                     </tr>
                                 );
                             })
