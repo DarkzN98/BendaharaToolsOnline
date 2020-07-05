@@ -9,6 +9,9 @@ import Logout from "./components/Logout";
 import KasBulanan from './components/KasBulanan';
 import MasterBuku from './components/MasterBuku';
 import MasterPenjualanBuku from './components/MasterPenjualanBuku';
+import MasterPinjamBarang from './components/MasterPinjamBarang';
+import ScannerKembalikan from './components/ScannerKembalikan';
+import MasterKembalikan from './components/MasterKembalikan';
 
 //TODO Web Template Studio: Add routes for your new pages here.
 const App = () => {
@@ -21,6 +24,9 @@ const App = () => {
           <Route exact path = "/kasbulanan" component = { KasBulanan } />
           <Route exact path = "/masterbuku" component = { MasterBuku } />
           <Route exact path = "/masterpenjualanbuku" component = { MasterPenjualanBuku } />
+          <Route exact path = "/masterpinjambarang" component = { MasterPinjamBarang } />
+          <Route exact path = "/scankembalikan" component= { ScannerKembalikan } />
+          <Route path = "/kembalikan/:id_peminjaman" component= { MasterKembalikan } />
         </Switch>
         <Footer />
       </React.Fragment>

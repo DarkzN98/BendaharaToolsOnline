@@ -3,7 +3,6 @@ import {useHistory} from 'react-router-dom';
 
 import NavBar from './../NavBar';
 import FormInsertBuku from './FormInsertBuku';
-import FormInsertNota from '../KasBulanan/FormInsertNota';
 import { Table } from 'react-bootstrap';
 import constants from '../constants';
 

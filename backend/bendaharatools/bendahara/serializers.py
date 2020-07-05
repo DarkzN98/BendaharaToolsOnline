@@ -2,7 +2,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework import serializers
-from bendahara.models import Toko, Nota, NotaItem, BukuPraktikum, PenjualanBuku
+from bendahara.models import Toko, Nota, NotaItem, BukuPraktikum, PenjualanBuku, Barang, PeminjamanBarang
 from django.db.models import Sum
 
 class UserSerializer(serializers.ModelSerializer):
@@ -54,3 +54,16 @@ class LoginSerializer(serializers.Serializer):
         if user and user.is_active:
             return user
         raise serializers.ValidationError("Incorrect Credentials")
+
+class BarangSerializer(serializers.ModelSerializer):
+    user_konfirmasi_kembali = UserSerializer()
+    class Meta:
+        model = Barang
+        fields = ['url', 'id', 'nama_barang', 'id_stiker', 'tanggal_kembali', 'user_konfirmasi_kembali']
+
+class PeminjamanBarangSerializer(serializers.HyperlinkedModelSerializer):
+    user_meminjamkan = UserSerializer()
+    barangs = BarangSerializer(many=True)
+    class Meta:
+        model = PeminjamanBarang
+        fields = ['url', 'id', 'nama_peminjam' , 'tanggal_peminjaman', 'user_meminjamkan', 'barangs']

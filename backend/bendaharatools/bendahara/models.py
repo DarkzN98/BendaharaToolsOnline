@@ -1,8 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinLengthValidator
+from django.utils.timezone import now
 
 # Create your models here.
+"""
+Class untuk Pembelian Barang
+-> Toko
+-> Nota
+   |-> Nota Item
+"""
 class Toko(models.Model):
     nama_toko = models.CharField(max_length=50, validators=[MinLengthValidator(1, 'nama_toko cannot be blank')] )
 
@@ -26,10 +33,12 @@ class NotaItem(models.Model):
     def __str__(self):
         return f'{self.nama_item}'
 
-class Barang(models.Model):
-    nama_barang = models.CharField(max_length=50)
-    id_stiker = models.CharField(max_length=4)
-
+"""
+Class digunakan untuk mencatat penjualan dan cetak
+buku praktikum
+-> BukuPraktikum
+-> Penjualan Buku
+"""
 class BukuPraktikum(models.Model):
     nama_buku = models.CharField(max_length=50)
     jurusan_buku = models.CharField(max_length=3)
@@ -51,3 +60,25 @@ class PenjualanBuku(models.Model):
 
     def __str__(self):
         return f'Penjualan Buku {self.buku.nama_buku} - {self.lab_penjualan_buku} [{self.tanggal_penjualan_buku.year}] { "OK" if self.confirmed_uang_penjualan_buku else ""}'
+
+"""
+Class digunakan untuk mencatat barang keluar atau
+peminjaman barang lab.
+"""
+class PeminjamanBarang(models.Model):
+    tanggal_peminjaman = models.DateField(auto_now_add=True)
+    nama_peminjam = models.CharField(max_length=50)
+    user_meminjamkan = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'peminjaman {self.nama_peminjam} [{self.tanggal_peminjaman}]'
+
+class Barang(models.Model):
+    peminjaman_barang = models.ForeignKey(to=PeminjamanBarang, on_delete=models.CASCADE, to_field='id', related_name='barangs')
+    nama_barang = models.CharField(max_length=50)
+    id_stiker = models.CharField(max_length=4)
+    tanggal_kembali = models.DateField(default=None, blank=True, null=True)
+    user_konfirmasi_kembali = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.nama_barang} [{self.id_stiker}] { "OK" if self.tanggal_kembali is not None else ""}'

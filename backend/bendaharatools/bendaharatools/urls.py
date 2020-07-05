@@ -26,10 +26,12 @@ from bendahara import views
 from bendahara.api import LoginAPI
 
 router = routers.DefaultRouter()
-router.register(r'tokos', views.TokoViewSet)
-router.register(r'notas', views.NotaViewSet)
+router.register(r'barangs', views.BarangViewSet)
 router.register(r'bukus', views.BukuPraktikumViewSet)
+router.register(r'notas', views.NotaViewSet)
+router.register(r'peminjamans', views.PeminjamanBarangViewSet)
 router.register(r'penjualans', views.PenjualanBukuViewSet)
+router.register(r'tokos', views.TokoViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),

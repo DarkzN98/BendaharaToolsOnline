@@ -35,6 +35,10 @@ const NavBar = () => {
               <NavDropdown.Header>Penjualan Buku</NavDropdown.Header>
               <NavDropdown.Item href="/masterbuku">Master Buku</NavDropdown.Item>
               <NavDropdown.Item href="/masterpenjualanbuku">Master Penjualan</NavDropdown.Item>
+              <NavDropdown.Divider></NavDropdown.Divider>
+              <NavDropdown.Header>Peminjaman Barang</NavDropdown.Header>
+              <NavDropdown.Item href="/masterpinjambarang">Master Pinjam Barang</NavDropdown.Item>
+              <NavDropdown.Item href="/scankembalikan">Kembalikan Barang (Scanner QR-Code)</NavDropdown.Item>
             </NavDropdown>
           }
           {

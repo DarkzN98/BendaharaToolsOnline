@@ -5,8 +5,8 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
-from bendahara.serializers import TokoSerializer, NotaSerializer, LoginSerializer, BukuPraktikumSerializer, PenjualanBukuSerializer
-from bendahara.models import Toko, Nota, NotaItem, BukuPraktikum, PenjualanBuku
+from bendahara.serializers import TokoSerializer, NotaSerializer, LoginSerializer, BukuPraktikumSerializer, PenjualanBukuSerializer, BarangSerializer, PeminjamanBarangSerializer, UserSerializer
+from bendahara.models import Toko, Nota, NotaItem, BukuPraktikum, PenjualanBuku, Barang, PeminjamanBarang, User
 
 import datetime
 
@@ -111,3 +111,42 @@ class PenjualanBukuViewSet(viewsets.ModelViewSet):
             else:
                 queryset = queryset.filter(tanggal_penjualan_buku__range=(datetime.datetime.strptime(f'{datetime.datetime.now().year}-07-01', '%Y-%m-%d'), datetime.datetime.strptime(f'{datetime.datetime.now().year}-12-31', '%Y-%m-%d')))
         return queryset
+
+class BarangViewSet(viewsets.ModelViewSet):
+    queryset = Barang.objects.all()
+    serializer_class = BarangSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def partial_update(self, request, pk=None):
+        current_user = request.user
+        instance = self.get_object()
+        if not current_user:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if not instance:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        instance.user_konfirmasi_kembali = current_user
+        instance.tanggal_kembali = request.data["tanggal_kembali"]
+        instance.save()
+        return Response(status=status.HTTP_200_OK)
+        
+
+class PeminjamanBarangViewSet(viewsets.ModelViewSet):
+    queryset = PeminjamanBarang.objects.all()
+    serializer_class = PeminjamanBarangSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        current_user = request.user
+        if not current_user:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        post_data = request.data
+        
+        try:
+            peminjaman_barang = PeminjamanBarang.objects.create(nama_peminjam=post_data['nama_peminjam'], user_meminjamkan=current_user)
+            for barang in post_data['barangs']:
+                Barang.objects.create(peminjaman_barang=peminjaman_barang, nama_barang=barang['nama_barang'], id_stiker=barang['id_stiker'])
+            return Response(status=status.HTTP_201_CREATED)
+        except Exception as ex:
+            return Response(data=ex.args, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response(status=status.HTTP_200_OK)
